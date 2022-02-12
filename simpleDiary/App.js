@@ -1,9 +1,14 @@
 import { getRoles } from "@testing-library/dom";
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 import "./App.css";
 import DiaryEditor from "./DiaryEditor";
 import DiaryList from "./DiaryList.js";
-import OptimizeTest from "./OptimizeTest.js";
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -30,7 +35,7 @@ const App = () => {
   useEffect(() => {
     getData();
   }, []);
-  const onCreate = (author, content, emotion) => {
+  const onCreate = useCallback((author, content, emotion) => {
     const create_date = new Date().getTime();
     const newItem = {
       author,
@@ -40,8 +45,8 @@ const App = () => {
       id: dataId.current,
     };
     dataId.current += 1;
-    setData([newItem, ...data]);
-  };
+    setData((data) => [newItem, ...data]);
+  }, []);
 
   const onRemove = (targetId) => {
     const newDiaryList = data.filter((it) => it.id !== targetId);
@@ -66,7 +71,6 @@ const App = () => {
   const { goodCount, badCount, goodRatio } = getDiaryAnalysis; //함수가 아닌 값으로 변함
   return (
     <div className="App">
-      <OptimizeTest />
       <DiaryEditor onCreate={onCreate} />
       <div>전체 일기 개수 : {data.length}</div>
       <div>기분 좋은 일기 개수 : {goodCount}</div>
