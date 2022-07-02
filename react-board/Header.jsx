@@ -21,9 +21,13 @@ function Header({ darkMode, setDarkMode }) {
       </TitleLogoDiv>
       <SubHeaderDiv>
         {darkMode ? (
-          <FontAwesomeIcon onClick={toggleDarkMode} icon={faSun} />
+          <div>
+            <FontAwesomeIcon onClick={toggleDarkMode} icon={faSun} />
+          </div>
         ) : (
-          <FontAwesomeIcon onClick={toggleDarkMode} icon={faMoon} />
+          <div>
+            <FontAwesomeIcon onClick={toggleDarkMode} icon={faMoon} />
+          </div>
         )}
       </SubHeaderDiv>
     </HeaderDiv>
