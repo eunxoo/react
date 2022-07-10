@@ -16,9 +16,10 @@ import {
   faArrowLeft,
   faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import EachPost from "./EachPost";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
+import EachPost from "./EachPost";
 
 const initialPostList = [
   { id: 1, title: "학보, 시사 N 대학기사상 취재" },
@@ -37,6 +38,16 @@ function ShowPostList() {
       { id: 4, title: "학보, 시사 N 대학기사상 취재" },
     ]);
   }, [postList]);
+
+  useEffect(() => {
+    axios
+      .get(
+        "https://reactapitest.pythonanywhere.com/api/list/?page=1&page_size10"
+      )
+      .then((response) => {
+        console.log(response);
+      });
+  }, []);
 
   const navigate = useNavigate();
   const goWrite = () => {
