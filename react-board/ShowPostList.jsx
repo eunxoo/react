@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   LoadingDiv,
   LoadingImg,
@@ -31,12 +31,12 @@ function ShowPostList() {
   const [isPost, setIsPost] = useState(false);
   const [postList, setPostList] = useState([]);
 
-  const addPost = () => {
+  const addPost = useCallback(() => {
     setPostList((postList) => [
       ...postList,
       { id: 4, title: "학보, 시사 N 대학기사상 취재" },
     ]);
-  };
+  }, [postList]);
 
   const navigate = useNavigate();
   const goWrite = () => {
