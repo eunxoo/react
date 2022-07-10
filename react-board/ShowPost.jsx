@@ -3,13 +3,8 @@ import {
   PostSection,
   PostTitleDiv,
   PostTitle,
-  PostListDiv,
-  PagingSection,
   LoadingDiv,
   LoadingImg,
-  PagenumberDiv,
-  CursorDiv,
-  PostRepl,
   PostReplDiv,
   ReplTitleDiv,
   ReplWriter,
@@ -23,7 +18,7 @@ const postData = {
   title: `바운스`,
   contents: `아기사자가 돌아서면 두 눈이 마주칠까, 심장이 bounce, bounce 두근 대 들릴까 봐 겁나
     한참을 망설이다 용기를 내 밤새워 준비한 내 개사 들어줘, 처음 본 순간부터 아기사자랑 친해질꺼야 생각했어~~,
-    Baby, you're my trampoline You make me bounce Bounde - 아기사자들은 다 귀여워 최고 -
+    Baby, you're my trampoline You make me bounce bounce - 아기사자들은 다 귀여워 최고 -
     `,
 };
 
@@ -37,19 +32,21 @@ const ShowPost = () => {
   const [repls, setRepls] = useState([]);
   const [postLoading, setPostLoading] = useState(true);
   const [replLoading, setReplLoading] = useState(true);
+  const replInput = useRef();
 
   useEffect(() => {
     setTimeout(() => {
       setPost(postData);
       setPostLoading(false);
-    }, 1000);
+    }, 300);
+    replInput.current.focus();
   });
 
   useEffect(() => {
     setTimeout(() => {
       setRepls(replData);
       setReplLoading(false);
-    }, 3000);
+    }, 1000);
   });
 
   //input창 상태관리
@@ -99,7 +96,11 @@ const ShowPost = () => {
         )}
 
         <WriterDiv>
-          <ReplInput onChange={onChange} value={repl}></ReplInput>
+          <ReplInput
+            onChange={onChange}
+            value={repl}
+            ref={replInput}
+          ></ReplInput>
           <ReplSubmitDiv>
             <span>입력</span>
           </ReplSubmitDiv>
