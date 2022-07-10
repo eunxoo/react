@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import {
-  ContentsInput,
   PostSection,
   PostSubmit,
   PostSubmitDiv,
-  PostTitle,
-  PostTitleDiv,
   PostWriteDiv,
-  TitleInput,
 } from "./styledComponent";
+import WriteTitle from "./WriteTitle";
+import InputPost from "./InputPost";
 
-function WritePost() {
+const SubmitComponent = () => (
+  <PostSubmitDiv>
+    <PostSubmit>작성완료</PostSubmit>
+  </PostSubmitDiv>
+);
+
+const WritePost = (props) => {
   //useState 만들어주기
   const [inputs, setInputs] = useState({
     title: "",
@@ -31,29 +35,19 @@ function WritePost() {
 
   return (
     <PostSection>
-      <PostTitleDiv>
-        <PostTitle>글쓰기</PostTitle>
-      </PostTitleDiv>
+      <WriteTitle />
       <PostWriteDiv>
-        <TitleInput
-          name="title"
-          value={title}
-          placeholder="제목을 입력해주세요. (15자 이내)"
+        <InputPost
           onChange={onChange}
-        />
-        <ContentsInput
-          name="contents"
-          value={contents}
-          cols="30"
-          rows="10"
-          onChange={onChange}
-        ></ContentsInput>
+          title={title}
+          contents={contents}
+        ></InputPost>
       </PostWriteDiv>
       <PostSubmitDiv>
         <PostSubmit>작성완료</PostSubmit>
       </PostSubmitDiv>
     </PostSection>
   );
-}
+};
 
 export default WritePost;
