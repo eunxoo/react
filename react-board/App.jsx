@@ -6,14 +6,13 @@ import Slogun from "./Slogun.jsx";
 import Footer from "./Footer.jsx";
 import ShowPostList from "./ShowPostList";
 import { useState } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import ShowPost from "./ShowPost";
 import WritePost from "./WritePost";
 
+const apiUrl = "https://reactapitest.pythonanywhere.com/api/";
 function App() {
   const [darkMode, setDarkMode] = useState(true);
-
-  const navigate = useNavigate();
 
   return (
     <>
@@ -27,7 +26,7 @@ function App() {
               <Route
                 exact
                 path="/"
-                element={<ShowPostList navigate={navigate} />}
+                element={<ShowPostList apiUrl={apiUrl} />}
               ></Route>
               <Route path="/write" element={<WritePost></WritePost>}></Route>
               <Route

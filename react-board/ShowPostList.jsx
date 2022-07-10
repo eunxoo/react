@@ -21,16 +21,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import EachPost from "./EachPost";
 
-const initialPostList = [
-  { id: 1, title: "학보, 시사 N 대학기사상 취재" },
-  { id: 2, title: "학보, 시사 N 대학기사상 취재" },
-  { id: 3, title: "학보, 시사 N 대학기사상 취재" },
-];
-
-function ShowPostList() {
+function ShowPostList({ apiUrl }) {
   const [loading, setLoading] = useState(true);
   const [isPost, setIsPost] = useState(false);
   const [postList, setPostList] = useState([]);
+
+  const navigate = useNavigate();
+  const goWrite = () => {
+    navigate("/write");
+  };
 
   const addPost = useCallback(() => {
     setPostList((postList) => [
@@ -40,25 +39,11 @@ function ShowPostList() {
   }, [postList]);
 
   useEffect(() => {
-    axios
-      .get(
-        "https://reactapitest.pythonanywhere.com/api/list/?page=1&page_size10"
-      )
-      .then((response) => {
-        console.log(response);
-      });
-  }, []);
-
-  const navigate = useNavigate();
-  const goWrite = () => {
-    navigate("/write");
-  };
-
-  useEffect(() => {
-    setTimeout(() => {
-      setPostList(initialPostList);
+    axios.get(`${apiUrl}list/?page=1&page_size=10`).then((response) => {
+      console.log(response.data);
+      setPostList(response.data.results);
       setLoading(false);
-    }, 600);
+    });
   }, []);
 
   return (
