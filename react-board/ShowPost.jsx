@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
+import { useParams } from "react-router-dom";
 import {
   PostSection,
   PostTitleDiv,
@@ -27,7 +28,8 @@ const replData = [
   { id: 3, content: `멋쟁이 사자처럼 최고!` },
 ];
 
-const ShowPost = () => {
+const ShowPost = (props) => {
+  const Params = useParams;
   const [post, setPost] = useState(null);
   const [repls, setRepls] = useState([]);
   const [postLoading, setPostLoading] = useState(true);
@@ -40,7 +42,7 @@ const ShowPost = () => {
       setPostLoading(false);
     }, 300);
     replInput.current.focus();
-  });
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {
@@ -60,41 +62,56 @@ const ShowPost = () => {
     console.log("리뷰 개수를 세는 중...!");
     return repls.length;
   };
+
+  const PostAndRepl = React.memo(
+    ({ post, postLoading, replCount, replLoading, repls }) => {
+      return (
+        <>
+          <PostTitleDiv>
+            <PostTitle>
+              {/* title */}
+              {post && post.title}
+            </PostTitle>
+          </PostTitleDiv>
+          {postLoading ? (
+            <LoadingDiv>
+              <LoadingImg src={`${process.env.PUBLIC_URL}/img/loading.svg`} />
+            </LoadingDiv>
+          ) : (
+            <PostReplDiv>{post && post.contents} </PostReplDiv>
+          )}
+          {/* post contents */}
+          <ReplTitleDiv>댓글 {replCount}</ReplTitleDiv>
+          {replLoading ? (
+            <LoadingDiv>
+              <LoadingImg src={`${process.env.PUBLIC_URL}/img/loading.svg`} />
+            </LoadingDiv>
+          ) : (
+            repls &&
+            repls.map((element) => (
+              <PostReplDiv key={element.id}>
+                <ReplWriter>익명</ReplWriter>
+                <Repl>{element.contents}</Repl>
+              </PostReplDiv>
+            ))
+          )}
+        </>
+      );
+    }
+  );
   //memo hook실습
   const replCount = useMemo(() => countRepls(repls), [repls]);
 
   return (
     <div>
       <PostSection>
-        <PostTitleDiv>
-          <PostTitle>{post && post.title}</PostTitle>
-        </PostTitleDiv>
-
-        {postLoading ? (
-          <LoadingDiv>
-            <LoadingImg src={`${process.env.PUBLIC_URL}/img/loading.svg`} />
-          </LoadingDiv>
-        ) : (
-          <PostReplDiv>{post && post.contents}</PostReplDiv>
-        )}
-
-        {/* post contents */}
-
-        <ReplTitleDiv>댓글 {replCount} </ReplTitleDiv>
-        {replLoading ? (
-          <LoadingDiv>
-            <LoadingImg src={`${process.env.PUBLIC_URL}/img/loading.svg`} />
-          </LoadingDiv>
-        ) : (
-          repls &&
-          repls.map((element) => (
-            <PostReplDiv key={element.id}>
-              <ReplWriter>익명</ReplWriter>
-              <Repl>{element.content}</Repl>
-            </PostReplDiv>
-          ))
-        )}
-
+        <PostAndRepl
+          post={post}
+          postLoading={postLoading}
+          replCount={replCount}
+          replLoading={replLoading}
+          repls={repls}
+        />
         <WriterDiv>
           <ReplInput
             onChange={onChange}
