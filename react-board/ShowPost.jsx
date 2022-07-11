@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 import {
   PostSection,
   PostTitleDiv,
@@ -24,12 +25,54 @@ const postData = {
 };
 
 const replData = [
-  { id: 2, content: `반가워요!` },
-  { id: 3, content: `멋쟁이 사자처럼 최고!` },
+  { id: 2, contents: `반가워요!` },
+  { id: 3, contents: `멋쟁이 사자처럼 최고!` },
 ];
 
-const ShowPost = (props) => {
-  const Params = useParams;
+const countRepls = (repls) => {
+  console.log("리뷰 개수를 세는 중...!");
+  return repls.length;
+};
+
+const PostAndRepl = React.memo(
+  ({ post, postLoading, replCount, replLoading, repls }) => {
+    return (
+      <>
+        <PostTitleDiv>
+          <PostTitle>
+            {/* title */}
+            {post && post.title}
+          </PostTitle>
+        </PostTitleDiv>
+        {postLoading ? (
+          <LoadingDiv>
+            <LoadingImg src={`${process.env.PUBLIC_URL}/img/loading.svg`} />
+          </LoadingDiv>
+        ) : (
+          <PostReplDiv>{post && post.contents} </PostReplDiv>
+        )}
+        {/* post contents */}
+        <ReplTitleDiv>댓글 {replCount}</ReplTitleDiv>
+        {replLoading ? (
+          <LoadingDiv>
+            <LoadingImg src={`${process.env.PUBLIC_URL}/img/loading.svg`} />
+          </LoadingDiv>
+        ) : (
+          repls &&
+          repls.map((element) => (
+            <PostReplDiv key={element.id}>
+              <ReplWriter>익명</ReplWriter>
+              <Repl>{element.contents}</Repl>
+            </PostReplDiv>
+          ))
+        )}
+      </>
+    );
+  }
+);
+
+const ShowPost = ({ apiUrl }) => {
+  const Params = useParams();
   const [post, setPost] = useState(null);
   const [repls, setRepls] = useState([]);
   const [postLoading, setPostLoading] = useState(true);
@@ -37,19 +80,14 @@ const ShowPost = (props) => {
   const replInput = useRef();
 
   useEffect(() => {
-    setTimeout(() => {
-      setPost(postData);
+    axios.get(`${apiUrl}posts/${Params.postID}`).then((response) => {
+      setPost(response.data);
       setPostLoading(false);
-    }, 300);
-    replInput.current.focus();
-  }, []);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setRepls(replData);
+      setRepls(response.data.repls);
       setReplLoading(false);
-    }, 1000);
-  });
+      replInput.current.focus();
+    });
+  }, []);
 
   //input창 상태관리
   const [repl, setRepl] = useState("");
@@ -58,49 +96,12 @@ const ShowPost = (props) => {
     setRepl(e.target.value);
   };
 
-  const countRepls = (repls) => {
-    console.log("리뷰 개수를 세는 중...!");
-    return repls.length;
-  };
-
-  const PostAndRepl = React.memo(
-    ({ post, postLoading, replCount, replLoading, repls }) => {
-      return (
-        <>
-          <PostTitleDiv>
-            <PostTitle>
-              {/* title */}
-              {post && post.title}
-            </PostTitle>
-          </PostTitleDiv>
-          {postLoading ? (
-            <LoadingDiv>
-              <LoadingImg src={`${process.env.PUBLIC_URL}/img/loading.svg`} />
-            </LoadingDiv>
-          ) : (
-            <PostReplDiv>{post && post.contents} </PostReplDiv>
-          )}
-          {/* post contents */}
-          <ReplTitleDiv>댓글 {replCount}</ReplTitleDiv>
-          {replLoading ? (
-            <LoadingDiv>
-              <LoadingImg src={`${process.env.PUBLIC_URL}/img/loading.svg`} />
-            </LoadingDiv>
-          ) : (
-            repls &&
-            repls.map((element) => (
-              <PostReplDiv key={element.id}>
-                <ReplWriter>익명</ReplWriter>
-                <Repl>{element.contents}</Repl>
-              </PostReplDiv>
-            ))
-          )}
-        </>
-      );
-    }
-  );
   //memo hook실습
   const replCount = useMemo(() => countRepls(repls), [repls]);
+
+  if (!Params.postID) {
+    return <PostSection>잘못된 접근입니다.</PostSection>;
+  }
 
   return (
     <div>

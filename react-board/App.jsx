@@ -1,9 +1,9 @@
 import { Main, MediaDiv } from "./styledComponent";
 import { darkTheme, lightTheme, GlobalStyles } from "./styles";
 import { ThemeProvider } from "styled-components";
-import Header from "./Header.jsx";
-import Slogun from "./Slogun.jsx";
-import Footer from "./Footer.jsx";
+import Header from "./Header";
+import Slogun from "./Slogun";
+import Footer from "./Footer";
 import ShowPostList from "./ShowPostList";
 import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
@@ -28,10 +28,13 @@ function App() {
                 path="/"
                 element={<ShowPostList apiUrl={apiUrl} />}
               ></Route>
-              <Route path="/write" element={<WritePost></WritePost>}></Route>
+              <Route
+                path="/write"
+                element={<WritePost apiUrl={apiUrl}></WritePost>}
+              ></Route>
               <Route
                 path="/post/:postID"
-                element={<ShowPost></ShowPost>}
+                element={<ShowPost apiUrl={apiUrl}></ShowPost>}
               ></Route>
             </Routes>
           </Main>
