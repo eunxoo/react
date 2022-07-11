@@ -23,7 +23,6 @@ import EachPost from "./EachPost";
 
 function ShowPostList({ apiUrl }) {
   const [loading, setLoading] = useState(true);
-  const [isPost, setIsPost] = useState(false);
   const [postList, setPostList] = useState([]);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState([]);
@@ -33,16 +32,9 @@ function ShowPostList({ apiUrl }) {
     navigate("/write");
   };
 
-  const addPost = useCallback(() => {
-    setPostList((postList) => [
-      ...postList,
-      { id: 4, title: "학보, 시사 N 대학기사상 취재" },
-    ]);
-  }, [postList]);
-
-  useEffect(() => {
+  const getPostList = useCallback(() => {
+    setLoading(true);
     axios.get(`${apiUrl}list/?page=${page}&page_size=10`).then((response) => {
-      console.log(response.data);
       const lastPage = Math.ceil(response.data.count / 10);
       const tempPages = [];
       for (let i = 1; i <= lastPage; i++) {
@@ -52,13 +44,16 @@ function ShowPostList({ apiUrl }) {
       setPostList(response.data.results);
       setLoading(false);
     });
-  }, [page]);
+  });
+  useEffect(getPostList, [page]);
 
   return (
     <>
       <PostSection>
         <PostTitleDiv>
-          <FontAwesomeIcon onClick={addPost} icon={faArrowsRotate} />
+          <CursorDiv>
+            <FontAwesomeIcon onClick={getPostList} icon={faArrowsRotate} />
+          </CursorDiv>
           <PostTitle>익명게시판</PostTitle>
           <CursorDiv>
             <FontAwesomeIcon onClick={goWrite} icon={faPenToSquare} />
@@ -70,7 +65,7 @@ function ShowPostList({ apiUrl }) {
               <LoadingImg src={`${process.env.PUBLIC_URL}/img/loading.svg`} />
               {/* Loading.io*/}
             </LoadingDiv>
-          ) : isPost ? (
+          ) : postList.length === 0 ? (
             <LoadingDiv>기록된 글이 없습니다.</LoadingDiv>
           ) : (
             <ul>
