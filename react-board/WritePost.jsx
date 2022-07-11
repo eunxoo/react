@@ -7,14 +7,15 @@ import {
 } from "./styledComponent";
 import WriteTitle from "./WriteTitle";
 import InputPost from "./InputPost";
+import axios from "axios";
 
-const SubmitComponent = React.memo(() => (
+const SubmitComponent = React.memo(({ onSubmit }) => (
   <PostSubmitDiv>
-    <PostSubmit>작성완료</PostSubmit>
+    <PostSubmit onClick={onSubmit}>작성완료</PostSubmit>
   </PostSubmitDiv>
 ));
 
-const WritePost = (props) => {
+const WritePost = ({ apiUrl }) => {
   //useState 만들어주기
   const [inputs, setInputs] = useState({
     title: "",
@@ -33,6 +34,18 @@ const WritePost = (props) => {
     });
   };
 
+  const onSubmit = () => {
+    axios
+      .post(`${apiUrl}posts/`, {
+        title: inputs.title,
+        contents: inputs.contents,
+        repls: [],
+      })
+      .then((response) => {
+        console.log(response);
+      });
+  };
+
   return (
     <PostSection>
       <WriteTitle />
@@ -43,7 +56,7 @@ const WritePost = (props) => {
           contents={contents}
         ></InputPost>
       </PostWriteDiv>
-      <SubmitComponent />
+      <SubmitComponent onSubmit={onSubmit} />
     </PostSection>
   );
 };
