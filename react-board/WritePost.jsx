@@ -8,6 +8,7 @@ import {
 import WriteTitle from "./WriteTitle";
 import InputPost from "./InputPost";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SubmitComponent = React.memo(({ onSubmit }) => (
   <PostSubmitDiv>
@@ -34,6 +35,7 @@ const WritePost = ({ apiUrl }) => {
     });
   };
 
+  const navigate = useNavigate();
   const onSubmit = () => {
     axios
       .post(`${apiUrl}posts/`, {
@@ -41,8 +43,8 @@ const WritePost = ({ apiUrl }) => {
         contents: inputs.contents,
         repls: [],
       })
-      .then((response) => {
-        console.log(response);
+      .then(() => {
+        navigate("../");
       });
   };
 
