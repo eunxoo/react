@@ -25,6 +25,8 @@ function ShowPostList({ apiUrl }) {
   const [loading, setLoading] = useState(true);
   const [isPost, setIsPost] = useState(false);
   const [postList, setPostList] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState([]);
 
   const navigate = useNavigate();
   const goWrite = () => {
@@ -39,12 +41,18 @@ function ShowPostList({ apiUrl }) {
   }, [postList]);
 
   useEffect(() => {
-    axios.get(`${apiUrl}list/?page=1&page_size=10`).then((response) => {
+    axios.get(`${apiUrl}list/?page=${page}&page_size=10`).then((response) => {
       console.log(response.data);
+      const lastPage = Math.ceil(response.data.count / 10);
+      const tempPages = [];
+      for (let i = 1; i <= lastPage; i++) {
+        tempPages.push(i);
+      }
+      setPages(tempPages);
       setPostList(response.data.results);
       setLoading(false);
     });
-  }, []);
+  }, [page]);
 
   return (
     <>
@@ -78,11 +86,23 @@ function ShowPostList({ apiUrl }) {
         </PostListDiv>
       </PostSection>
       <PagingSection>
-        <PagenumberDiv>
+        <PagenumberDiv
+          onClick={() => {
+            if (page > 1) setPage(page - 1);
+          }}
+        >
           <FontAwesomeIcon icon={faArrowLeft} />
         </PagenumberDiv>
-        <PagenumberDiv>2</PagenumberDiv>
-        <PagenumberDiv>
+        {pages.map((pageNum) => (
+          <PagenumberDiv key={pageNum} onClick={() => setPage(pageNum)}>
+            {pageNum}
+          </PagenumberDiv>
+        ))}
+        <PagenumberDiv
+          onClick={() => {
+            if (page < pages.length) setPage(page + 1);
+          }}
+        >
           <FontAwesomeIcon icon={faArrowRight} />
         </PagenumberDiv>
       </PagingSection>
