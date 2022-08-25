@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 
-const Home = () => {
+const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
   useEffect(() => {
@@ -29,10 +29,11 @@ const Home = () => {
     e.preventDefault();
     try {
       const docRef = await addDoc(collection(dbService, "nweets"), {
-        nweet,
+        text: nweet,
         createAt: Date.now(),
+        createorId: userObj.uid,
       });
-      console.log("Document writeen with ID : ", docRef.id);
+      console.log("Document writen with ID : ", docRef.id);
     } catch (error) {
       console.error("Error adding document: ", error);
     }
@@ -60,7 +61,7 @@ const Home = () => {
       <div>
         {nweets.map((nweet) => (
           <div key={nweet.id}>
-            <h4>{nweet.nweet}</h4>
+            <h4>{nweet.text}</h4>
           </div>
         ))}
       </div>
