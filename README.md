@@ -1,6 +1,4 @@
-# react
-
-nwitter
+# nwitter
 
 npx create-react-app nwitter
 npm i firebase@9.6.1
