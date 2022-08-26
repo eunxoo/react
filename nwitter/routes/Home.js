@@ -1,5 +1,5 @@
 import Nweet from "components/Nweet";
-import { dbService } from "fbase";
+import { storageService, dbService } from "fbase";
 import {
   getDocs,
   addDoc,
@@ -8,6 +8,8 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
+import { ref, uploadString, getDownloadURL } from "firebase/storage";
+import { v4 as uuidv4 } from "uuid";
 import React, { useEffect, useState, useRef } from "react";
 
 const Home = ({ userObj }) => {
@@ -29,17 +31,22 @@ const Home = ({ userObj }) => {
   }, []);
   const onSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const docRef = await addDoc(collection(dbService, "nweets"), {
-        text: nweet,
-        createAt: Date.now(),
-        createorId: userObj.uid,
-      });
-      console.log("Document writen with ID : ", docRef.id);
-    } catch (error) {
-      console.error("Error adding document: ", error);
-    }
-    setNweet("");
+    // try {
+    //   const docRef = await addDoc(collection(dbService, "nweets"), {
+    //     text: nweet,
+    //     createAt: Date.now(),
+    //     createorId: userObj.uid,
+    //   });
+    //   console.log("Document writen with ID : ", docRef.id);
+    // } catch (error) {
+    //   console.error("Error adding document: ", error);
+    // }
+    // setNweet("");
+    const uuid = uuidv4();
+    const storageRef = ref(storageService, `${userObj.uid}/${uuid}`);
+    //imageId = `${userObj.uid}/${uuid}`;
+    const response = await uploadString(storageRef, attachment, "data_url");
+    console.log(response);
   };
   const onChange = (e) => {
     const {
