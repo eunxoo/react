@@ -11,3 +11,5 @@ npm i react-router-dom@5.3.0
 npm uninstall -S react-router-dom
 
 npm install -S react-router-dom@5.3.3
+
+npm install uuid
