@@ -15,7 +15,7 @@ import React, { useEffect, useState, useRef } from "react";
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
-  const [attachment, setAttachment] = useState();
+  const [attachment, setAttachment] = useState("");
   useEffect(() => {
     const q = query(
       collection(dbService, "nweets"),
@@ -31,22 +31,23 @@ const Home = ({ userObj }) => {
   }, []);
   const onSubmit = async (e) => {
     e.preventDefault();
-    // try {
-    //   const docRef = await addDoc(collection(dbService, "nweets"), {
-    //     text: nweet,
-    //     createAt: Date.now(),
-    //     createorId: userObj.uid,
-    //   });
-    //   console.log("Document writen with ID : ", docRef.id);
-    // } catch (error) {
-    //   console.error("Error adding document: ", error);
-    // }
-    // setNweet("");
-    const uuid = uuidv4();
-    const storageRef = ref(storageService, `${userObj.uid}/${uuid}`);
-    //imageId = `${userObj.uid}/${uuid}`;
-    const response = await uploadString(storageRef, attachment, "data_url");
-    console.log(response);
+    let fileUrl = "";
+    if (attachment != "") {
+      const uuid = uuidv4();
+      const storageRef = ref(storageService, `${userObj.uid}/${uuid}`);
+      //imageId = `${userObj.uid}/${uuid}`;
+      const response = await uploadString(storageRef, attachment, "data_url");
+      fileUrl = await getDownloadURL(response.ref);
+    }
+    const nweetObj = {
+      text: nweet,
+      creatorId: userObj.uid,
+      fileUrl,
+      createAt: Date.now(),
+    };
+    await addDoc(collection(dbService, "nweets"), nweetObj);
+    setNweet("");
+    setAttachment("");
   };
   const onChange = (e) => {
     const {
@@ -70,7 +71,7 @@ const Home = ({ userObj }) => {
     reader.readAsDataURL(theFile);
   };
   const onClearAttachment = () => {
-    setAttachment(null);
+    setAttachment("");
     fileInput.current.value = "";
   };
   const fileInput = useRef();
@@ -103,7 +104,7 @@ const Home = ({ userObj }) => {
           <Nweet
             key={nweet.id}
             nweetObj={nweet}
-            isOwner={nweet.createorId === userObj.uid}
+            isOwner={nweet.creatorId === userObj.uid}
           />
         ))}
       </div>
