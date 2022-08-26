@@ -32,7 +32,7 @@ const Home = ({ userObj }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     let fileUrl = "";
-    if (attachment != "") {
+    if (attachment !== "") {
       const uuid = uuidv4();
       const storageRef = ref(storageService, `${userObj.uid}/${uuid}`);
       //imageId = `${userObj.uid}/${uuid}`;
@@ -48,6 +48,7 @@ const Home = ({ userObj }) => {
     await addDoc(collection(dbService, "nweets"), nweetObj);
     setNweet("");
     setAttachment("");
+    fileInput.current.value = "";
   };
   const onChange = (e) => {
     const {
