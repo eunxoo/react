@@ -21,3 +21,5 @@ npm i --save @fortawesome/free-solid-svg-icons
 npm i @fortawesome/fontawesome-free
 
 npm install --save @fortawesome/fontawesome-free
+
+npm i @fortawesome/react-fontawesome
