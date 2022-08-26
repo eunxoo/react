@@ -29,5 +29,5 @@ function App() {
     </>
   );
 }
-//https://nomadcoders.co/nwitter/lectures/1910
+//https://nomadcoders.co/nwitter/lectures/1925
 export default App;
