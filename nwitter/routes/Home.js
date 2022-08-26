@@ -8,11 +8,12 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
+  const [attachment, setAttachment] = useState();
   useEffect(() => {
     const q = query(
       collection(dbService, "nweets"),
@@ -53,10 +54,19 @@ const Home = ({ userObj }) => {
     const theFile = files[0];
     const reader = new FileReader();
     reader.onloadend = (finishedEvent) => {
-      console.log(finishedEvent);
+      //파일 로딩
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+      setAttachment(result);
     };
     reader.readAsDataURL(theFile);
   };
+  const onClearAttachment = () => {
+    setAttachment(null);
+    fileInput.current.value = "";
+  };
+  const fileInput = useRef();
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -67,8 +77,19 @@ const Home = ({ userObj }) => {
           onChange={onChange}
           maxLength={120}
         />
-        <input type="file" accept="image/*" onChange={onFileChange} />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={onFileChange}
+          ref={fileInput}
+        />
         <input type="submit" value="Nweet" />
+        {attachment && (
+          <div>
+            <img src={attachment} width="50px" height="50px" />
+            <button onClick={onClearAttachment}>Clear</button>
+          </div>
+        )}
       </form>
       <div>
         {nweets.map((nweet) => (
