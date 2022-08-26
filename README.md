@@ -13,3 +13,13 @@ npm uninstall -S react-router-dom
 npm install -S react-router-dom@5.3.3
 
 npm install uuid
+
+npm i --save @fortawesome/free-brands-svg-icons
+
+npm i --save @fortawesome/free-solid-svg-icons
+
+npm i @fortawesome/fontawesome-free
+
+npm install --save @fortawesome/fontawesome-free
+
+npm i @fortawesome/react-fontawesome
