@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { authService } from "fbase";
 import { updateProfile } from "firebase/auth";
 
-const Profile = ({ userObj }) => {
+const Profile = ({ refreshUser, userObj }) => {
   const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
   const onLogOutClick = () => {
     authService.signOut();
@@ -20,6 +20,7 @@ const Profile = ({ userObj }) => {
       await updateProfile(authService.currentUser, {
         displayName: newDisplayName,
       });
+      refreshUser();
     }
   };
 
